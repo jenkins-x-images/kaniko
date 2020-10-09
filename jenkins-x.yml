@@ -14,18 +14,6 @@ pipelineConfig:
           image: gcr.io/kaniko-project/executor:9912ccbf8d22bbafbf971124600fbb0b13b9cbd6
         stages:
           - name: release
-            options:
-              volumes:
-                - name: kaniko-secret
-                  secret:
-                    secretName: kaniko-secret
-                    items:
-                      - key: kaniko-secret
-                        path: kaniko/kaniko-secret.json
-              containerOptions:
-                volumeMounts:
-                  - name: kaniko-secret
-                    mountPath: /secrets
             environment:
               - name: GIT_COMMITTER_EMAIL
                 value: jenkins-x@googlegroups.com
@@ -35,8 +23,8 @@ pipelineConfig:
                 value: jenkins-x@googlegroups.com
               - name: GIT_AUTHOR_NAME
                 value: jenkins-x-bot
-              - name: GOOGLE_APPLICATION_CREDENTIALS
-                value: /secrets/kaniko/kaniko-secret.json
+              - name: NO_GOOGLE_APPLICATION_CREDENTIALS
+                value: "true"
             steps:
 
               - name: warm-cache
@@ -70,21 +58,9 @@ pipelineConfig:
           image: gcr.io/kaniko-project
         stages:
           - name: build-and-push
-            options:
-              volumes:
-                - name: kaniko-secret
-                  secret:
-                    secretName: kaniko-secret
-                    items:
-                      - key: kaniko-secret
-                        path: kaniko/kaniko-secret.json
-              containerOptions:
-                volumeMounts:
-                  - name: kaniko-secret
-                    mountPath: /secrets
             environment:
-              - name: GOOGLE_APPLICATION_CREDENTIALS
-                value: /secrets/kaniko/kaniko-secret.json
+              - name: NO_GOOGLE_APPLICATION_CREDENTIALS
+                value: "true"
             steps:
               - name: warm-cache
                 command: /kaniko/warmer
