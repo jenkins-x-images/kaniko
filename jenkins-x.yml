@@ -26,14 +26,6 @@ pipelineConfig:
               - name: NO_GOOGLE_APPLICATION_CREDENTIALS
                 value: "true"
             steps:
-
-              - name: warm-cache
-                command: /kaniko/warmer
-                image: gcr.io/kaniko-project/warmer
-                args:
-                  - --cache-dir=/workspace
-                  - --image=centos:7
-
               - name: build
                 image: gcr.io/kaniko-project/executor:9912ccbf8d22bbafbf971124600fbb0b13b9cbd6
                 command: /kaniko/executor
@@ -41,9 +33,6 @@ pipelineConfig:
                   - --dockerfile=Dockerfile
                   - --destination=gcr.io/jenkinsxio/kaniko:${inputs.params.version}
                   - --context=/workspace/source
-                  - --cache-repo=gcr.io/jenkinsxio/cache-kaniko
-                  - --cache=true
-                  - --cache-dir=/workspace
 
     pullRequest:
       pipeline:
@@ -62,13 +51,6 @@ pipelineConfig:
               - name: NO_GOOGLE_APPLICATION_CREDENTIALS
                 value: "true"
             steps:
-              - name: warm-cache
-                command: /kaniko/warmer
-                image: gcr.io/kaniko-project/warmer
-                args:
-                  - --cache-dir=/workspace
-                  - --image=centos:7
-
               - name: build
                 image: gcr.io/kaniko-project/executor:9912ccbf8d22bbafbf971124600fbb0b13b9cbd6
                 command: /kaniko/executor
@@ -76,6 +58,3 @@ pipelineConfig:
                   - --dockerfile=Dockerfile
                   - --destination=gcr.io/jenkinsxio/kaniko:${inputs.params.version}
                   - --context=/workspace/source
-                  - --cache-repo=gcr.io/jenkinsxio/cache-kaniko
-                  - --cache=true
-                  - --cache-dir=/workspace
